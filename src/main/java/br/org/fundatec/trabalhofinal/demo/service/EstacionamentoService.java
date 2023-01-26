@@ -4,6 +4,7 @@ import br.org.fundatec.trabalhofinal.demo.dto.estacionamento.EstacionamentoCreat
 import br.org.fundatec.trabalhofinal.demo.dto.estacionamento.EstacionamentoDTO;
 import br.org.fundatec.trabalhofinal.demo.entity.ClienteEntity;
 import br.org.fundatec.trabalhofinal.demo.entity.EstacionamentoEntity;
+import br.org.fundatec.trabalhofinal.demo.exception.RegraDeNegocioException;
 import br.org.fundatec.trabalhofinal.demo.repository.EstacionamentoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @AllArgsConstructor
 @Service
@@ -38,4 +40,16 @@ public class EstacionamentoService {
                 .toList();
     }
 
+    public EstacionamentoDTO findById(Integer id) throws RegraDeNegocioException {
+        Optional<EstacionamentoEntity> estacionamentoOptional = estacionamentoRepository.findById(id);
+        if (estacionamentoOptional.isEmpty()) {
+            throw new RegraDeNegocioException("Não existe estacionamento com este id.");
+        }
+        EstacionamentoDTO estacionamentoDTO = new EstacionamentoDTO();
+        estacionamentoDTO.setId(estacionamentoOptional.get().getId());
+        estacionamentoDTO.setNome(estacionamentoOptional.get().getNome());
+        estacionamentoDTO.setResponsavel(estacionamentoOptional.get().getResponsavel());
+
+        return estacionamentoDTO;
+    }
 }
