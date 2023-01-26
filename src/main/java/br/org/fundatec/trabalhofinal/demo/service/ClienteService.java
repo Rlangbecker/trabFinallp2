@@ -1,23 +1,17 @@
 package br.org.fundatec.trabalhofinal.demo.service;
 
 
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteCreateDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.endereco.EnderecoDTO;
 import br.org.fundatec.trabalhofinal.demo.entity.ClienteEntity;
 import br.org.fundatec.trabalhofinal.demo.entity.EnderecoEntity;
-import br.org.fundatec.trabalhofinal.demo.entity.PlanoEntity;
-import br.org.fundatec.trabalhofinal.demo.entity.VeiculoEntity;
 import br.org.fundatec.trabalhofinal.demo.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Optional;
 
 
 @AllArgsConstructor
@@ -73,10 +67,14 @@ public class ClienteService {
     public ClienteDTO findClienteById(Integer idCliente) {
 
         ClienteEntity cliente = findById(idCliente);
-        ClienteDTO clienteDTO = objectMapper.convertValue(cliente, ClienteDTO.class);
+        ClienteDTO clienteDTO = new ClienteDTO();
         clienteDTO.setId(idCliente);
+        clienteDTO.setNome(cliente.getNome());
+        clienteDTO.setCpf(cliente.getCpf());
+        clienteDTO.setAssinante(cliente.isAssinante());
         EnderecoDTO endereco = objectMapper.convertValue(cliente.getEndereco(), EnderecoDTO.class);
         clienteDTO.setEndereco(endereco);
+        clienteDTO.getEndereco().setId(cliente.getEndereco().getIdEndereco());
 
         return clienteDTO;
     }

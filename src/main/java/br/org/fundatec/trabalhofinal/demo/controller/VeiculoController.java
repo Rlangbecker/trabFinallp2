@@ -1,7 +1,7 @@
 package br.org.fundatec.trabalhofinal.demo.controller;
 
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoCreateDTO;
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoDTO;
+import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoCreateDTO;
+import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoDTO;
 import br.org.fundatec.trabalhofinal.demo.entity.enums.TipoVeiculo;
 import br.org.fundatec.trabalhofinal.demo.service.VeiculoService;
 import lombok.RequiredArgsConstructor;

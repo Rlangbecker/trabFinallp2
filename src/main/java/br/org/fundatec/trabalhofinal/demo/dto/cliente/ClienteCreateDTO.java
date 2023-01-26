@@ -1,6 +1,5 @@
 package br.org.fundatec.trabalhofinal.demo.dto.cliente;
 
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoCreateDTO;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;

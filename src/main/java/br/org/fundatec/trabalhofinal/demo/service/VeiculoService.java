@@ -1,7 +1,7 @@
 package br.org.fundatec.trabalhofinal.demo.service;
 
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoCreateDTO;
-import br.org.fundatec.trabalhofinal.demo.dto.VeiculoDTO;
+import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoCreateDTO;
+import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteDTO;
 import br.org.fundatec.trabalhofinal.demo.entity.ClienteEntity;
 import br.org.fundatec.trabalhofinal.demo.entity.VeiculoEntity;
@@ -45,7 +45,9 @@ public class VeiculoService {
     public List<VeiculoDTO> listAll() {
         return veiculoRepository.findAll().stream()
                 .map(veiculoEntity -> {
-                    VeiculoDTO veiculoDTO = objectMapper.convertValue(veiculoEntity, VeiculoDTO.class);
+                    VeiculoDTO veiculoDTO = new VeiculoDTO();
+                    veiculoDTO.setPlaca(veiculoEntity.getPlaca());
+                    veiculoDTO.setTipoVeiculo(veiculoEntity.getTipoVeiculo());
                     veiculoDTO.setIdVeiculo(veiculoEntity.getIdVeiculo());
                     ClienteDTO clienteDTO = clienteService.findClienteById(veiculoEntity.getDono().getIdCliente());
                     veiculoDTO.setClienteDTO(clienteDTO);
