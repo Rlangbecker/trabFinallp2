@@ -133,6 +133,10 @@ public class TarifaService {
 
         double valor = calcularTarifa(veiculoEntity.getTipoVeiculo(), tarifaRetorno.getEntrada(), tarifaSaidaCreateDTO.getSaida(), cliente.isAssinante());
 
+        if (cliente.isAssinante()) {
+            valor = valor * 0.85;
+        }
+
         tarifaRetorno.setValorPago(valor);
         TarifaEntity tarifaRetornoFinal = tarifaRepository.save(tarifaRetorno);
 
