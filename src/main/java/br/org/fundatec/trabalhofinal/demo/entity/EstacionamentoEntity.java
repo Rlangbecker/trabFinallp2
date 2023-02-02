@@ -1,5 +1,6 @@
 package br.org.fundatec.trabalhofinal.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,7 +21,8 @@ public class EstacionamentoEntity {
     private Integer id;
     private String nome;
     private String responsavel;
-    @OneToMany
-    @JoinColumn(name = "idTarifa", updatable = false)
+    @OneToMany(mappedBy = "estacionamento")
+//    @JoinColumn(name = "idTarifa", updatable = false)
+    @JsonIgnore
     private Set<TarifaEntity> tarifas;
 }

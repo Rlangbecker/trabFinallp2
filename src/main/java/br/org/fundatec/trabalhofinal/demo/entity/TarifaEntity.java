@@ -1,5 +1,6 @@
 package br.org.fundatec.trabalhofinal.demo.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -21,6 +22,7 @@ public class TarifaEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="idEstacionamento", updatable = false)
+    @JsonIgnore
     private EstacionamentoEntity estacionamento;
 
     private LocalDateTime entrada;

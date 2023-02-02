@@ -21,6 +21,7 @@ public class VeiculoEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer idVeiculo;
 
+    @Enumerated(EnumType.ORDINAL)
     private TipoVeiculo tipoVeiculo;
 
     private String placa;
@@ -30,7 +31,7 @@ public class VeiculoEntity {
     @JoinColumn(name ="idCliente", referencedColumnName = "id_cliente")
     private ClienteEntity dono;
 
-    @OneToMany
-    @JoinColumn(name = "idTarifa",updatable = false)
+    @OneToMany(mappedBy = "veiculoEntity")
+//    @JoinColumn(name = "idTarifa",updatable = false)
     private Set<TarifaEntity> tarifa;
 }

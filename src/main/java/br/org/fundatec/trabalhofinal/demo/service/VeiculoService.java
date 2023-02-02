@@ -1,8 +1,8 @@
 package br.org.fundatec.trabalhofinal.demo.service;
 
+import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoCreateDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.veiculo.VeiculoDTO;
-import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteDTO;
 import br.org.fundatec.trabalhofinal.demo.entity.ClienteEntity;
 import br.org.fundatec.trabalhofinal.demo.entity.VeiculoEntity;
 import br.org.fundatec.trabalhofinal.demo.entity.enums.TipoVeiculo;
@@ -56,23 +56,53 @@ public class VeiculoService {
                 .toList();
     }
 
-    private VeiculoEntity findById (Integer id) throws RegraDeNegocioException {
-       Optional<VeiculoEntity> veiculo = veiculoRepository.findById(id);
-       if(veiculo.isEmpty()){
-           throw new RegraDeNegocioException("Veículo não encontrado pelo ID - "+ id);
-       }
+    private VeiculoEntity findById(Integer id) throws RegraDeNegocioException {
+        Optional<VeiculoEntity> veiculo = veiculoRepository.findById(id);
+        if (veiculo.isEmpty()) {
+            throw new RegraDeNegocioException("Veículo não encontrado pelo ID - " + id);
+        }
 
-       VeiculoEntity veiculoEntity = new VeiculoEntity();
-       veiculoEntity.setIdVeiculo(veiculo.get().getIdVeiculo());
-       veiculoEntity.setTipoVeiculo(veiculo.get().getTipoVeiculo());
-       veiculoEntity.setPlaca(veiculo.get().getPlaca());
-       veiculoEntity.setDono(veiculo.get().getDono());
+        VeiculoEntity veiculoEntity = new VeiculoEntity();
+        veiculoEntity.setIdVeiculo(veiculo.get().getIdVeiculo());
+        veiculoEntity.setTipoVeiculo(veiculo.get().getTipoVeiculo());
+        veiculoEntity.setPlaca(veiculo.get().getPlaca());
+        veiculoEntity.setDono(veiculo.get().getDono());
 
-       return veiculoEntity;
+        return veiculoEntity;
     }
 
     public VeiculoDTO findVeiculoDTOById(Integer id) throws RegraDeNegocioException {
         VeiculoDTO veiculoDTO = objectMapper.convertValue(findById(id), VeiculoDTO.class);
         return veiculoDTO;
+    }
+
+    public VeiculoDTO findByPlaca(String placa) throws RegraDeNegocioException {
+        Optional<VeiculoEntity> veiculoOptional = veiculoRepository.findVeiculoEntityByPlaca(placa);
+        if (veiculoOptional.isEmpty()) {
+            throw new RegraDeNegocioException("Veículo não encontrado");
+        }
+        VeiculoDTO veiculoDTO = new VeiculoDTO();
+        veiculoDTO.setTipoVeiculo(veiculoOptional.get().getTipoVeiculo());
+        veiculoDTO.setPlaca(veiculoOptional.get().getPlaca());
+        veiculoDTO.setIdVeiculo(veiculoOptional.get().getIdVeiculo());
+        ClienteDTO cliente = clienteService.findClienteById(veiculoOptional.get().getDono().getIdCliente());
+        veiculoDTO.setClienteDTO(cliente);
+
+        return veiculoDTO;
+    }
+
+    public VeiculoEntity findVeiculoEntityByPlaca(String placa) throws RegraDeNegocioException {
+        Optional<VeiculoEntity> veiculoOptional = veiculoRepository.findVeiculoEntityByPlaca(placa);
+        if (veiculoOptional.isEmpty()) {
+            throw new RegraDeNegocioException("Veículo não encontrado");
+        }
+        VeiculoEntity veiculoEntity = new VeiculoEntity();
+        veiculoEntity.setTipoVeiculo(veiculoOptional.get().getTipoVeiculo());
+        veiculoEntity.setPlaca(veiculoOptional.get().getPlaca());
+        veiculoEntity.setIdVeiculo(veiculoOptional.get().getIdVeiculo());
+        ClienteDTO cliente = clienteService.findClienteById(veiculoOptional.get().getDono().getIdCliente());
+        veiculoEntity.setDono(objectMapper.convertValue(cliente,ClienteEntity.class));
+
+        return veiculoEntity;
     }
 }
