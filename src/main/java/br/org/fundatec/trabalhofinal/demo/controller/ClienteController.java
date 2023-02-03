@@ -3,6 +3,7 @@ package br.org.fundatec.trabalhofinal.demo.controller;
 import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteCreateDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.cliente.ClienteDTO;
 import br.org.fundatec.trabalhofinal.demo.dto.endereco.EnderecoDTO;
+import br.org.fundatec.trabalhofinal.demo.exception.RegraDeNegocioException;
 import br.org.fundatec.trabalhofinal.demo.service.ClienteService;
 import br.org.fundatec.trabalhofinal.demo.service.EnderecoService;
 import lombok.RequiredArgsConstructor;
@@ -38,19 +39,19 @@ public class ClienteController {
     }
 
     @GetMapping("/find-by-id")
-    public ResponseEntity<ClienteDTO> findById(@RequestParam("idCliente")Integer idCliente){
+    public ResponseEntity<ClienteDTO> findById(@RequestParam("idCliente")Integer idCliente) throws RegraDeNegocioException {
         ClienteDTO clienteDTO = clienteService.findClienteById(idCliente);
         return new ResponseEntity<>(clienteDTO,HttpStatus.OK);
     }
 
     @PutMapping("/{idCliente}")
-    public ResponseEntity<ClienteDTO> update(@PathVariable("idCliente")Integer idCliente,ClienteCreateDTO clienteCreateDTO){
+    public ResponseEntity<ClienteDTO> update(@PathVariable("idCliente")Integer idCliente,ClienteCreateDTO clienteCreateDTO) throws RegraDeNegocioException {
         ClienteDTO clienteDTO= clienteService.update(idCliente,clienteCreateDTO);
         return new ResponseEntity<>(clienteDTO,HttpStatus.OK);
     }
 
     @DeleteMapping
-    public ResponseEntity<Void> delete(@RequestParam("idCliente")Integer idCliente){
+    public ResponseEntity<Void> delete(@RequestParam("idCliente")Integer idCliente) throws RegraDeNegocioException {
         clienteService.delete(idCliente);
         return new ResponseEntity<>(null,HttpStatus.OK);
     }

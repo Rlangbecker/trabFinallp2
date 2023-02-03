@@ -24,7 +24,7 @@ public class VeiculoService {
     private final ClienteService clienteService;
     private final ObjectMapper objectMapper;
 
-    public VeiculoDTO create(VeiculoCreateDTO veiculoCreateDTO, TipoVeiculo tipoVeiculo) {
+    public VeiculoDTO create(VeiculoCreateDTO veiculoCreateDTO, TipoVeiculo tipoVeiculo) throws RegraDeNegocioException {
 
         VeiculoEntity veiculoEntity = objectMapper.convertValue(veiculoCreateDTO, VeiculoEntity.class);
         ClienteDTO clienteDTO = clienteService.findClienteById(veiculoCreateDTO.getIdCliente());
@@ -49,7 +49,12 @@ public class VeiculoService {
                     veiculoDTO.setPlaca(veiculoEntity.getPlaca());
                     veiculoDTO.setTipoVeiculo(veiculoEntity.getTipoVeiculo());
                     veiculoDTO.setIdVeiculo(veiculoEntity.getIdVeiculo());
-                    ClienteDTO clienteDTO = clienteService.findClienteById(veiculoEntity.getDono().getIdCliente());
+                    ClienteDTO clienteDTO = null;
+                    try {
+                        clienteDTO = clienteService.findClienteById(veiculoEntity.getDono().getIdCliente());
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
                     veiculoDTO.setClienteDTO(clienteDTO);
                     return veiculoDTO;
                 })
@@ -102,6 +107,7 @@ public class VeiculoService {
         veiculoEntity.setIdVeiculo(veiculoOptional.get().getIdVeiculo());
         ClienteDTO cliente = clienteService.findClienteById(veiculoOptional.get().getDono().getIdCliente());
         veiculoEntity.setDono(objectMapper.convertValue(cliente,ClienteEntity.class));
+        veiculoEntity.getDono().setIdCliente(cliente.getId());
 
         return veiculoEntity;
     }

@@ -46,21 +46,21 @@ public class PlanoService {
         return planoDTO;
     }
 
-    public PlanoEntity findByAssinante(ClienteEntity cliente) {
+    public PlanoEntity findByAssinante(ClienteEntity cliente) throws RegraDeNegocioException {
         PlanoEntity planoRetorno = planoRepository.findPlanoEntityByCliente(cliente);
         if (planoRetorno != null) {
             return planoRetorno;
         } else {
-            return null;
+            throw new RegraDeNegocioException("Cliente sem plano");
         }
     }
 
-    public PlanoEntity findByAssinanteId(Integer idCliente) {
+    public PlanoEntity findByAssinanteId(Integer idCliente) throws RegraDeNegocioException {
         PlanoEntity planoRetorno = planoRepository.findPlanoEntityByCliente_IdCliente(idCliente);
         if (planoRetorno != null) {
             return planoRetorno;
         } else {
-            return null;
+            throw new RegraDeNegocioException("Cliente sem plano");
         }
     }
 
@@ -68,7 +68,11 @@ public class PlanoService {
         return planoRepository.findAll().stream()
                 .map(planoEntity -> {
                     PlanoDTO planoDTO = objectMapper.convertValue(planoEntity, PlanoDTO.class);
-                    planoDTO.setCliente(clienteService.findClienteById(planoEntity.getCliente().getIdCliente()));
+                    try {
+                        planoDTO.setCliente(clienteService.findClienteById(planoEntity.getCliente().getIdCliente()));
+                    } catch (RegraDeNegocioException e) {
+                        throw new RuntimeException(e);
+                    }
                     return planoDTO;
                 })
                 .toList();
@@ -91,7 +95,19 @@ public class PlanoService {
         }
     }
 
-    public boolean verificarAssinatura(Integer idAssinante) {
+    public void descontarTarifa(Integer idAssinante,double valor) throws RegraDeNegocioException {
+       ClienteDTO cliente= clienteService.findClienteById(idAssinante);
+       ClienteEntity clienteEntity = new ClienteEntity();
+       clienteEntity.setIdCliente(cliente.getId());
+       clienteEntity.setNome(cliente.getNome());
+       clienteEntity.setCpf(clienteEntity.getCpf());
+       PlanoEntity planoEntity = findByAssinante(clienteEntity);
+       planoEntity.setValor(planoEntity.getValor()-valor);
+       planoRepository.save(planoEntity);
+
+    }
+
+    public boolean verificarAssinatura(Integer idAssinante) throws RegraDeNegocioException {
         boolean assinante = true;
         boolean naoAssinante = false;
         ClienteEntity cliente = objectMapper.convertValue(clienteService.findClienteById(idAssinante), ClienteEntity.class);

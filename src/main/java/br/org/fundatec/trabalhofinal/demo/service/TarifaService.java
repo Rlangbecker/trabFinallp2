@@ -26,6 +26,8 @@ public class TarifaService {
 
     private final TarifaPorTipoService tarifaPorTipoService;
     private final VeiculoService veiculoService;
+
+    private final PlanoService planoService;
     private final ObjectMapper objectMapper;
 
     public TarifaDTO createTarifa(TarifaCreateDTO tarifaCreateDTO) throws RegraDeNegocioException {
@@ -49,7 +51,7 @@ public class TarifaService {
         return tarifaDTO;
     }
 
-    private Double calcularTarifa(TipoVeiculo tipoVeiculo, LocalDateTime entrada, LocalDateTime saida, boolean assinante) throws RegraDeNegocioException {
+    private Double calcularTarifa(TipoVeiculo tipoVeiculo, LocalDateTime entrada, LocalDateTime saida) throws RegraDeNegocioException {
 
         Long horas = ChronoUnit.HOURS.between(entrada, saida);
 
@@ -131,10 +133,11 @@ public class TarifaService {
 
         tarifaRetorno.setSaida(tarifaSaidaCreateDTO.getSaida());
 
-        double valor = calcularTarifa(veiculoEntity.getTipoVeiculo(), tarifaRetorno.getEntrada(), tarifaSaidaCreateDTO.getSaida(), cliente.isAssinante());
+        double valor = calcularTarifa(veiculoEntity.getTipoVeiculo(), tarifaRetorno.getEntrada(), tarifaSaidaCreateDTO.getSaida());
 
         if (cliente.isAssinante()) {
-            valor = valor * 0.85;
+            valor = valor -(valor*0.15);
+        planoService.descontarTarifa(cliente.getIdCliente(),valor);
         }
 
         tarifaRetorno.setValorPago(valor);
